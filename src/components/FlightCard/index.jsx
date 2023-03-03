@@ -1,4 +1,4 @@
-import { View, Text, Image, Pressable } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -15,7 +15,7 @@ export default function FlightCard({
 }) {
   const { t } = useTranslation();
   return (
-    <Pressable style={styles.cardContainer}>
+    <TouchableOpacity style={styles.cardContainer}>
       <View style={styles.containerJustifyCenter}>
         <Image source={{ uri: airlineLogo }} style={styles.imageAirlineLogo} />
       </View>
@@ -104,6 +104,6 @@ export default function FlightCard({
       <View style={styles.containerJustifyCenter}>
         <FontAwesome5 name="angle-right" size={14} color={colors.basicGray} />
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 }

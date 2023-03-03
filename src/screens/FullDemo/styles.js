@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
   cardContainer: {
     width: '92%',
     // height: '40%',
-    top: '-5%',
+    top: '-10%',
     borderRadius: 6,
     padding: 14,
     alignItems: 'center',
