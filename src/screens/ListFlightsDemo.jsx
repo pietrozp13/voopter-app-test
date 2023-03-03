@@ -3,20 +3,25 @@ import { Text, View, FlatList, SafeAreaView } from 'react-native';
 
 import FlightCard from '@components/FlightCard';
 import DateTag from '@components/DateTag';
+import Pagination from '@components/Pagination';
 
 import { getFlights } from '@services';
 
 export default function ListFlightsDemo({ route, navigation }) {
   const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const form = route.params;
+
   useEffect(() => {
     handleGetFlights();
-  }, []);
+  }, [page]);
 
   const handleGetFlights = async () => {
+    setLoading(true);
     const fullData = await getFlights(form, page);
     setSearchResults(fullData);
+    setLoading(false);
   };
 
   const hasFormData =
@@ -24,7 +29,12 @@ export default function ListFlightsDemo({ route, navigation }) {
     form.idaData &&
     (Object.keys(form?.idaData).length || Object.keys(form?.voltaData).length);
 
-  if (searchResults.length <= 0) return <Text>Loading ...</Text>;
+  if (searchResults.length <= 0 || loading)
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <Text>Loading ...</Text>
+      </SafeAreaView>
+    );
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {!!hasFormData && (
@@ -89,6 +99,9 @@ export default function ListFlightsDemo({ route, navigation }) {
         </View>
       )}
       <FlatList
+        ListFooterComponent={() => {
+          return <Pagination page={page} onNext={setPage} onPrev={setPage} />;
+        }}
         data={searchResults}
         renderItem={({ item }) => {
           const { airlineLogo, price, outbound, back, departureAirport, arrivalAirport } = item;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Modal, View, Button, Text, SafeAreaView, Pressable } from 'react-native';
 
 import { Calendar } from 'react-native-calendars';
@@ -72,11 +72,7 @@ export default function DatePicker({
   const [showCalendar, setShowCalendar] = useState(false);
   const [currentDatesMarked, setCurrentDatesMarked] = useState({});
 
-  useEffect(() => {
-    selectedDates(currentDatesMarked);
-  }, [currentDatesMarked]);
-
-  const toogleDate = (date) => {
+  const toogleDate = (date, update = false) => {
     const currentDatesMarkedSize = Object.keys(currentDatesMarked).length;
 
     if (!currentDatesMarked[date] && maxDaysSelect > currentDatesMarkedSize) {
@@ -93,6 +89,7 @@ export default function DatePicker({
       setCurrentDatesMarked((prevData) => {
         const newData = { ...prevData };
         delete newData[date];
+        if (update) selectedDates(newData);
         return newData;
       });
     }
@@ -114,7 +111,7 @@ export default function DatePicker({
                 key={day}
                 date={day}
                 color={currentDatesMarked[day].selectedColor}
-                onClose={toogleDate}
+                onClose={(date) => toogleDate(date, true)}
               />
             );
           })}
@@ -140,7 +137,7 @@ export default function DatePicker({
           <Pressable
             style={styles.confirmButton}
             onPress={() => {
-              // selectedDates(currentDatesMarked);
+              selectedDates(currentDatesMarked);
               setShowCalendar(false);
             }}
           >

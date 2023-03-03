@@ -11,6 +11,8 @@ import SelectCityAirport from '@components/Select';
 
 import { getMinDate } from '@utils';
 
+import { styles } from './styles';
+
 export default function FullDemo({ navigation }) {
   const [form, setForm] = useState({});
   const { t } = useTranslation();
@@ -31,11 +33,20 @@ export default function FullDemo({ navigation }) {
     return null;
   };
 
+  const compare2DatesMin = (idaDate, voltaDate) => {
+    const minIda = getMinDate(Object.keys(idaDate));
+    const minVolta = getMinDate(Object.keys(voltaDate));
+    return new Date(minIda) <= new Date(minVolta);
+  };
+
   const validate = () => {
     let errorMsg = false;
+    compare2DatesMin(form?.idaData, form?.voltaData);
     if (Object.keys(form.idaData).length === 0) errorMsg = 'Você deve selecionar uma data de ida';
     if (Object.keys(form.destino).length === 0 && Object.keys(form.origem).length === 0)
       errorMsg = 'Você deve selecionar uma origem e um destino';
+    if (!compare2DatesMin(form?.idaData, form?.voltaData))
+      errorMsg = 'A data de volta não pode ser menor que de ida';
     if (errorMsg) {
       Toast.show({
         type: 'error',
@@ -54,66 +65,30 @@ export default function FullDemo({ navigation }) {
     }
   };
 
-  const disabledDestino = form?.idaData && Object.keys(form.idaData).length === 0;
+  const disabled = form?.idaData && Object.keys(form.idaData).length === 0;
+
   return (
-    <View style={{ flex: 1, alignItems: 'center' }}>
-      <View
-        style={{
-          width: '100%',
-          height: '40%',
-          borderRadius: 6,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#009FCD',
-        }}
-      >
+    <View style={styles.mainContainer}>
+      <View style={styles.logoContainer}>
         <View style={{ borderRadius: 6 }}>
-          <Image
-            source={logoImage}
-            style={{
-              borderRadius: 6,
-              backgroundColor: '#fff',
-              width: 200,
-              height: 70,
-              resizeMode: 'contain',
-            }}
-          />
+          <Image source={logoImage} style={styles.image} />
         </View>
       </View>
-      <View
-        style={{
-          width: '85%',
-          // height: '40%',
-          top: '-5%',
-          borderRadius: 6,
-          padding: 10,
-          alignItems: 'center',
-          backgroundColor: '#fff',
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.29,
-          shadowRadius: 1.65,
-
-          elevation: 5,
-        }}
-      >
-        <View style={{ height: 80, width: '100%', zIndex: 10 }}>
+      <View style={styles.cardContainer}>
+        <View style={styles.searchIda}>
           <SelectCityAirport
             title={t('origem')}
             onSelectCityAirport={(item) => handleSetForm('origem', item)}
           />
         </View>
-        <View style={{ height: 80, width: '100%', zIndex: 9 }}>
+        <View style={styles.searchVolta}>
           <SelectCityAirport
             title={t('destino')}
             onSelectCityAirport={(item) => handleSetForm('destino', item)}
           />
         </View>
-        <View style={{ flex: 1, width: '100%', borderBottomWidth: 1, borderColor: '#cacaca96' }} />
-        <View style={{ width: '100%', marginTop: 4, zIndex: 7 }}>
+        <View style={styles.divider} />
+        <View style={styles.datePickerContainer}>
           <DatePicker
             maxDaysSelect={4}
             title={t('ida')}
@@ -129,36 +104,19 @@ export default function FullDemo({ navigation }) {
             buttonOpenTitle={t('calendario')}
             buttonConfirmTitle={t('confirmar')}
             minDate={getCurrentMinDateBack()}
-            disabled={disabledDestino}
+            disabled={disabled}
             selectedDates={(dates) => {
               handleSetForm('voltaData', dates);
             }}
           />
         </View>
       </View>
-      {/* <Text>{JSON.stringify(form)}</Text> */}
       <TouchableOpacity
-        style={{
-          width: '85%',
-          height: 50,
-          borderRadius: 6,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: '#009FCD',
-
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.29,
-          shadowRadius: 1.65,
-
-          elevation: 5,
-        }}
+        disabled={disabled}
+        style={{ ...styles.buttonContainer, opacity: disabled ? 0.3 : 1 }}
         onPress={handleShowFlights}
       >
-        <Text style={{ color: '#fff', fontSize: 20, fontWeight: 700 }}>{t('pesquisar')}</Text>
+        <Text style={styles.buttonText}>{t('pesquisar')}</Text>
       </TouchableOpacity>
       <Toast />
     </View>
