@@ -5,6 +5,14 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "9498b91d-a758-4dec-bd80-6b9ebcf540df"
+      }
+    },
+    "plugins": [
+      "expo-localization"
     ]
   }
 }
