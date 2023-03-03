@@ -13,6 +13,8 @@ PODS:
     - ExpoModulesCore
   - ExpoKeepAwake (12.0.1):
     - ExpoModulesCore
+  - ExpoLocalization (14.1.1):
+    - ExpoModulesCore
   - ExpoModulesCore (1.2.3):
     - React-Core
     - React-RCTAppDelegate
@@ -389,6 +391,7 @@ DEPENDENCIES:
   - EXFont (from `../node_modules/expo-font/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
+  - ExpoLocalization (from `../node_modules/expo-localization/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -450,6 +453,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo"
   ExpoKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
+  ExpoLocalization:
+    :path: "../node_modules/expo-localization/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
   EXSplashScreen:
@@ -532,6 +537,7 @@ SPEC CHECKSUMS:
   EXFont: f34e3ed60c1561418179072c4b2a509460e78e6d
   Expo: 4cbc4316581eba6a6ef7f4f79f36cd370c7952a4
   ExpoKeepAwake: ed1d83e338574b0593f71c15149cd95fa1734a2b
+  ExpoLocalization: f26cd431ad9ea3533c5b08c4fabd879176a794bb
   ExpoModulesCore: 42eb16f5d14113c7c7a7202b308d86113d6d5eb6
   EXSplashScreen: e0635d7b13ee2210735cc36f112abcc635494858
   FBLazyVector: 60195509584153283780abdac5569feffb8f08cc
@@ -571,6 +577,6 @@ SPEC CHECKSUMS:
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
   Yoga: 5ed1699acbba8863755998a4245daa200ff3817b
 
-PODFILE CHECKSUM: 6ff6d87a58ce1f7762f36e1508e73212f6674005
+PODFILE CHECKSUM: aa357fa7a5473d942b274e41f051c3da9a1a25c9
 
 COCOAPODS: 1.11.3

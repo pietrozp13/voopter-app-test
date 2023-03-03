@@ -1,8 +1,9 @@
 import { View, Text, Image, Pressable } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { FontAwesome5 } from '@expo/vector-icons';
 
-import { styles } from './styles';
+import { styles, colors } from './styles';
 
 export default function FlightCard({
   airlineLogo,
@@ -12,102 +13,96 @@ export default function FlightCard({
   outbound,
   back,
 }) {
+  const { t } = useTranslation();
   return (
     <Pressable style={styles.cardContainer}>
-      <View style={{ justifyContent: 'center', padding: 4 }}>
+      <View style={styles.containerJustifyCenter}>
         <Image source={{ uri: airlineLogo }} style={styles.imageAirlineLogo} />
       </View>
-      <View
-        style={{
-          flex: 1,
-          flexDirection: 'column',
-          justifyContent: 'center',
-          marginHorizontal: 6,
-        }}
-      >
+      <View style={styles.bodyContainer}>
         {/* ida */}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <FontAwesome5 name="plane-departure" size={18} color="#00aad6" />
-            <View style={{ flexDirection: 'column', marginHorizontal: 6, alignItems: 'center' }}>
+        <View style={styles.destinyContainer}>
+          <View style={styles.dateInfosContainer}>
+            <FontAwesome5
+              name="plane-departure"
+              size={18}
+              color={colors.vooperBlueBasic}
+              style={{ marginRight: 4 }}
+            />
+            <View style={styles.textContainer}>
               <Text style={styles.basicText}>{outbound.day}</Text>
               <Text style={styles.basicText}>{outbound.weekName}</Text>
             </View>
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <View style={{ flexDirection: 'column', marginHorizontal: 4, alignItems: 'center' }}>
+          <View style={styles.dateInfosContainer}>
+            <View style={styles.textContainer}>
               <Text style={styles.basicText}>{outbound.departureTime}</Text>
               <Text style={styles.basicText}>{departureAirport}</Text>
             </View>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <FontAwesome5 name="arrow-right" size={14} color="gray" />
+          <View style={styles.dateInfosContainer}>
+            <FontAwesome5 name="arrow-right" size={14} color={colors.basicGray} />
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <View style={{ flexDirection: 'column', marginHorizontal: 4, alignItems: 'center' }}>
+          <View style={styles.dateInfosContainer}>
+            <View style={styles.textContainer}>
               <Text style={styles.basicText}>{outbound.arrivalTime}</Text>
               <Text style={styles.basicText}>{arrivalAirport}</Text>
             </View>
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <View style={{ flexDirection: 'column', marginHorizontal: 4, alignItems: 'center' }}>
+          <View style={styles.dateInfosContainer}>
+            <View style={styles.textContainer}>
               <Text style={styles.basicText}>{outbound.duretion}</Text>
-              <Text style={styles.basicText}>horas</Text>
+              <Text style={styles.basicText}>{t('horas')}</Text>
             </View>
           </View>
         </View>
-        <View
-          style={{
-            marginVertical: 6,
-            borderTopColor: '#e0e0e0',
-            borderTopWidth: 1,
-          }}
-        />
+        <View style={styles.divider} />
         {/* volta */}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={styles.destinyContainer}>
+          <View style={styles.dateInfosContainer}>
             <FontAwesome5
               name="plane-arrival"
               size={20}
-              color="#00aad6"
-              style={{ transform: [{ rotateY: '180deg' }] }}
+              color={colors.vooperBlueBasic}
+              style={{ transform: [{ rotateY: '180deg' }], marginRight: 3 }}
             />
-            <View style={{ flexDirection: 'column', marginHorizontal: 5, alignItems: 'center' }}>
+            <View style={styles.textContainer}>
               <Text style={styles.basicText}>{back.day}</Text>
               <Text style={styles.basicText}>{back.weekName}</Text>
             </View>
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <View style={{ flexDirection: 'column', marginHorizontal: 4, alignItems: 'center' }}>
+          <View style={styles.dateInfosContainer}>
+            <View style={styles.textContainer}>
               <Text style={styles.basicText}>{back.departureTime}</Text>
               <Text style={styles.basicText}>{departureAirport}</Text>
             </View>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <FontAwesome5 name="arrow-left" size={14} color="gray" />
+          <View style={styles.dateInfosContainer}>
+            <FontAwesome5 name="arrow-left" size={14} color={colors.basicGray} />
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <View style={{ flexDirection: 'column', marginHorizontal: 4, alignItems: 'center' }}>
+          <View style={styles.dateInfosContainer}>
+            <View style={styles.textContainer}>
               <Text style={styles.basicText}>{back.arrivalTime}</Text>
               <Text style={styles.basicText}>{arrivalAirport}</Text>
             </View>
           </View>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <View style={{ flexDirection: 'column', marginHorizontal: 4, alignItems: 'center' }}>
+          <View style={styles.dateInfosContainer}>
+            <View style={styles.textContainer}>
               <Text style={styles.basicText}>{back.duretion}</Text>
               <Text style={styles.basicText}>horas</Text>
             </View>
           </View>
         </View>
       </View>
-      <View style={{ justifyContent: 'center' }}>
-        <Text style={{ ...styles.basicText, color: '#19c80c', fontSize: 14, fontWeight: 800 }}>
-          R$ {price}
-        </Text>
+      <View style={styles.containerJustifyCenter}>
+        <Text style={styles.priceText}>R${price}</Text>
+      </View>
+      <View style={styles.containerJustifyCenter}>
+        <FontAwesome5 name="angle-right" size={14} color={colors.basicGray} />
       </View>
     </Pressable>
   );

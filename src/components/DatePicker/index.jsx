@@ -9,6 +9,8 @@ import { styles } from './styles';
 
 import DateTag from '../DateTag';
 
+import { today } from '@utils';
+
 LocaleConfig.locales['pt-br'] = {
   monthNames: [
     'Janeiro',
@@ -52,7 +54,8 @@ LocaleConfig.locales['pt-br'] = {
 };
 LocaleConfig.defaultLocale = 'pt-br';
 
-const DAYS_COLORS = ['#8936b3', '#36b336', '#ffb84d', '#26587d'];
+// const DAYS_COLORS = ['#8936b3', '#36b336', '#ffb84d', '#26587d'];
+const DAYS_COLORS = ['#00aad6', '#00aad6', '#00aad6', '#00aad6'];
 
 const BASICO_COLORS = {
   DEFAULT_BLUE: '#00aad6',
@@ -62,8 +65,9 @@ export default function DatePicker({
   maxDaysSelect = 4,
   selectedDates,
   title = 'title',
-  buttonOpenTitle = 'Calendário',
   buttonConfirmTitle = 'Confirmar',
+  minDate = null,
+  disabled = false,
 }) {
   const [showCalendar, setShowCalendar] = useState(false);
   const [currentDatesMarked, setCurrentDatesMarked] = useState({});
@@ -95,10 +99,14 @@ export default function DatePicker({
   };
 
   return (
-    <>
+    <View style={{ opacity: disabled ? 0.3 : 1 }}>
       <Text style={styles.title}>{title}</Text>
-      <Pressable style={styles.inputContainer} onPress={() => setShowCalendar(true)}>
-        <AntDesign name="calendar" size={28} color="gray" />
+      <Pressable
+        style={styles.inputContainer}
+        disabled={disabled}
+        onPress={() => setShowCalendar(true)}
+      >
+        <AntDesign name="calendar" size={28} color="#a0a0a0" style={{ marginRight: 2 }} />
         <View style={styles.input}>
           {Object.keys(currentDatesMarked).map((day) => {
             return (
@@ -115,27 +123,31 @@ export default function DatePicker({
       <Modal animationType="fade" transparent={true} visible={showCalendar}>
         <SafeAreaView style={styles.modalContainer}>
           <Calendar
+            style={styles.calendarContainer}
             onDayPress={(date) => {
               toogleDate(date.dateString);
             }}
             enableSwipeMonths={true}
-            minDate={'2023-02-27'} // mudar para data atual auto
+            minDate={minDate || today()} // mudar para data atual auto
             theme={{
               arrowColor: BASICO_COLORS.DEFAULT_BLUE,
               'stylesheet.calendar.header': {
-                week: {
-                  marginTop: 10,
-                  marginBottom: 100,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                },
+                week: styles.calendarWeek,
               },
             }}
             markedDates={currentDatesMarked}
           />
-          <Button title={buttonConfirmTitle} onPress={() => setShowCalendar(false)} />
+          <Pressable
+            style={styles.confirmButton}
+            onPress={() => {
+              // selectedDates(currentDatesMarked);
+              setShowCalendar(false);
+            }}
+          >
+            <Text style={styles.confirmButtonText}>{buttonConfirmTitle}</Text>
+          </Pressable>
         </SafeAreaView>
       </Modal>
-    </>
+    </View>
   );
 }

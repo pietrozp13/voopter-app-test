@@ -1,19 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
-import { View, Text, Pressable, TextInput } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import Fuse from 'fuse.js';
+import Autocomplete from 'react-native-autocomplete-input';
+import { AntDesign } from '@expo/vector-icons';
 
-import { getCitiesAirports } from '../../services';
-import { useDebounce } from '../../hooks/useDebounce';
+import { getCitiesAirports } from '@services';
+import { queueAction } from '@utils';
 
-import { styles } from './styles';
+import { styles, colors } from './styles';
 
-export default function SelectCityAirport({ selectCityAirport = () => {} }) {
+export default function SelectCityAirport({ onSelectCityAirport = () => {}, title = 'title' }) {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedCityAirport, setSelectedCityAirport] = useState(null);
   const [textSearch, setTextSearch] = useState('');
 
-  console.log({ selectedCityAirport });
+  const { t } = useTranslation();
 
   const fuseRef = useRef();
 
@@ -37,50 +40,74 @@ export default function SelectCityAirport({ selectCityAirport = () => {} }) {
     });
   };
 
-  useDebounce(
-    () => {
-      getSearchResults(textSearch);
-    },
-    [textSearch, searchResults],
-    100
-  );
-
-  const getSearchResults = async (text) => {
-    setSearchResults(fuseRef.current.search(text));
-  };
+  useEffect(() => {
+    // debounce to prevent multiples request or over processing
+    queueAction(
+      textSearch,
+      () => setSearchResults(fuseRef?.current?.search(textSearch, { limit: 5 }) || []),
+      100
+    );
+    if (textSearch === '') {
+      setSelectedCityAirport({});
+      onSelectCityAirport({});
+    }
+  }, [textSearch]);
 
   const handleSelectCityAirport = (item) => {
     setSelectedCityAirport(item);
-    selectCityAirport(item);
+    onSelectCityAirport(item);
   };
 
   return (
-    <View style={{ ...styles.dayTagsContainer }}>
-      <TextInput
-        style={{
-          height: 40,
-          margin: 12,
-          borderWidth: 1,
-          padding: 10,
-        }}
-        onChangeText={setTextSearch}
-        value={textSearch}
-      />
-      {searchResults.length > 0 &&
-        searchResults.splice(0, 5).map(({ item }) => {
-          return (
-            <Pressable
-              onPress={() => handleSelectCityAirport(item)}
-              key={item.iata_code}
-              style={{ borderColor: 'red', borderWidth: 1, margin: 3 }}
-            >
-              <Text>{item.city}</Text>
-              <Text>{item.country}</Text>
-              <Text>{item.iata_code}</Text>
-              <Text>{item.name}</Text>
-            </Pressable>
-          );
-        })}
-    </View>
+    <>
+      <View style={styles.autocompleteContainer}>
+        <Text style={styles.title}>{title}</Text>
+        <Autocomplete
+          style={styles.autocompleteStyle}
+          inputContainerStyle={styles.inputContainerStyle}
+          listContainerStyle={styles.shadowCard}
+          hideResults={selectedCityAirport?.name || textSearch === ''}
+          autoCorrect={true}
+          data={searchResults}
+          value={
+            (selectedCityAirport?.name &&
+              `${selectedCityAirport.city} - ${selectedCityAirport.iata_code}`) ||
+            textSearch
+          }
+          onChangeText={(text) => {
+            setTextSearch(text);
+            setSelectedCityAirport({});
+          }}
+          placeholder={t('cidadeOuAeroporto')}
+          flatListProps={{
+            keyboardShouldPersistTaps: 'always',
+            keyExtractor: ({ item }) => item.iata_code + item.city,
+            renderItem: ({ item: { item } }) => (
+              <TouchableOpacity
+                onPress={() => handleSelectCityAirport(item)}
+                style={styles.autocompleteListContainer}
+              >
+                <Text>
+                  ({item.iata_code}) - {item.city} - {item.country}
+                </Text>
+
+                <Text>{item.name}</Text>
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        {textSearch !== '' && (
+          <TouchableOpacity
+            onPress={() => {
+              setTextSearch('');
+              setSelectedCityAirport({});
+            }}
+            style={styles.closeButton}
+          >
+            <AntDesign name="close" size={22} color={colors.basicGray} />
+          </TouchableOpacity>
+        )}
+      </View>
+    </>
   );
 }
